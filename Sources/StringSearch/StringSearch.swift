@@ -21,7 +21,7 @@ public struct SearchResult<C: BidirectionalCollection> {
 
 extension SearchResult: Equatable where C: Equatable {}
 
-extension SearchResult: Hashable where C: Hashable, C.Index: Hashable {}
+extension SearchResult: Hashable where C: Hashable {}
 
 internal func search<SearchQuery: BidirectionalCollection,
                      PotentialMatch: BidirectionalCollection>(
