@@ -77,21 +77,24 @@ public func search<SearchQuery: BidirectionalCollection, PotentialMatches: Colle
     for query: SearchQuery,
     in potentialMatches: PotentialMatches,
     equalityTest: (PotentialMatches.Element.Element, SearchQuery.Element) -> Bool
-) -> [SearchResult<PotentialMatches.Element>]
+) -> [(PotentialMatches.Index, SearchResult<PotentialMatches.Element>)]
     where PotentialMatches.Element: BidirectionalCollection,
           SearchQuery.Element == PotentialMatches.Element.Element
 {
-    withoutActuallyEscaping(equalityTest) { equalityTest in
-        potentialMatches.lazy.compactMap {
-            search(for: query, in: $0, equalityTest: equalityTest)
-        }.sorted { $0.distance < $1.distance }
+    potentialMatches.indices.compactMap { i in
+        search(for: query, in: potentialMatches[i], equalityTest: equalityTest).map {
+            (i, $0)
+        }
+    }.sorted {
+        ($0.1.matchingOffsetRanges.count, $0.1.distance) <
+            ($1.1.matchingOffsetRanges.count, $1.1.distance)
     }
 }
 
 public func search<SearchQuery: BidirectionalCollection, PotentialMatches: Collection>(
     for query: SearchQuery,
     in potentialMatches: PotentialMatches
-) -> [SearchResult<PotentialMatches.Element>]
+) -> [(PotentialMatches.Index, SearchResult<PotentialMatches.Element>)]
     where SearchQuery.Element: Equatable,
           SearchQuery.Element == PotentialMatches.Element.Element
 {
@@ -102,7 +105,7 @@ public func searchIgnoringCase<SearchQuery: StringProtocol,
                                PotentialMatches: Collection>(
     for query: SearchQuery,
     in potentialMatches: PotentialMatches
-) -> [SearchResult<PotentialMatches.Element>]
+) -> [(PotentialMatches.Index, SearchResult<PotentialMatches.Element>)]
     where PotentialMatches.Element: StringProtocol
 {
     search(for: query, in: potentialMatches) { lhs, rhs in

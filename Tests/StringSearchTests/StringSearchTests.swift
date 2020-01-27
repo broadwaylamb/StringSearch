@@ -7,9 +7,9 @@ final class StringSearchTests: XCTestCase {
                                 in: ["hello", "hell", "hl", "ll", "hllo", "hll", "fhll", "fhell"],
                                 expect: [("hll", [0 ..< 3]),
                                          ("hllo", [0 ..< 3]),
+                                         ("fhll", [1 ..< 4]),
                                          ("hell", [0 ..< 1, 2 ..< 4]),
                                          ("hello", [0 ..< 1, 2 ..< 4]),
-                                         ("fhll", [1 ..< 4]),
                                          ("fhell", [1 ..< 2, 3 ..< 5])])
     }
 
@@ -19,8 +19,8 @@ final class StringSearchTests: XCTestCase {
                                      "abrabracadabra",
                                      "abracabracadabra",
                                      "abracaldabra"],
-                                expect: [("abracaldabra", [0 ..< 6, 7 ..< 12]),
-                                         ("labracadabra", [1 ..< 12]),
+                                expect: [("labracadabra", [1 ..< 12]),
+                                         ("abracaldabra", [0 ..< 6, 7 ..< 12]),
                                          ("abracabracadabra", [0 ..< 6, 11 ..< 16]),
                                          ("abrabracadabra", [0 ..< 4, 7 ..< 14])])
     }
@@ -71,6 +71,14 @@ final class StringSearchTests: XCTestCase {
                                          ("Haskell", [1 ..< 3]),
                                          ("Analysis", [0 ..< 1, 5 ..< 6])],
                                 caseSensitive: false)
+
+        assertSearchResultEqual(search: "Ca",
+                                in: languages,
+                                expect: [("OCaml", [1 ..< 3]),
+                                         ("Pascal", [3 ..< 5]),
+                                         ("CUDA", [0 ..< 1, 3 ..< 4]),
+                                         ("Clean", [0 ..< 1, 3 ..< 4])],
+                                caseSensitive: false)
     }
 
     static let allTests = [
@@ -89,7 +97,7 @@ private func assertSearchResultEqual(search query: String,
     let findings = caseSensitive
         ? search(for: query, in: collection)
         : searchIgnoringCase(for: query, in: collection)
-    let actual = findings.map { ($0.content, $0.matchingOffsetRanges) }
+    let actual = findings.map { ($1.content, $1.matchingOffsetRanges) }
 
     guard actual.count == expect.count else {
         XCTFail("\(actual) is not equal to \(expect)", file: file, line: line)
