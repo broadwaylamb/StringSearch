@@ -27,7 +27,6 @@ final class StringSearchTests: XCTestCase {
 
     func testProgrammingLanguages() {
         let languages = [
-            "Name",
             "C",
             "Fortran",
             "C++",
@@ -78,6 +77,19 @@ final class StringSearchTests: XCTestCase {
                                          ("Pascal", [3 ..< 5]),
                                          ("CUDA", [0 ..< 1, 3 ..< 4]),
                                          ("Clean", [0 ..< 1, 3 ..< 4])],
+                                caseSensitive: false)
+
+        assertSearchResultEqual(search: "A",
+                                in: languages,
+                                expect:  [("Ada", [0 ..< 1]),
+                                          ("Assembly", [0 ..< 1]),
+                                          ("Analysis", [0 ..< 1]),
+                                          ("Pascal", [1 ..< 2]),
+                                          ("CUDA", [3 ..< 4]),
+                                          ("OCaml", [2 ..< 3]),
+                                          ("Haskell", [1 ..< 2]),
+                                          ("Clean", [3 ..< 4]),
+                                          ("Fortran", [5 ..< 6])],
                                 caseSensitive: false)
     }
 

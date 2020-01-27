@@ -49,7 +49,7 @@ internal func search<SearchQuery: BidirectionalCollection,
         case let .remove(offset, _, nil):
             // The more the offset, the less the penalty.
             distance += Double(count - offset) / Double(count) * penalty
-            penalty *= 0.5
+            penalty *= 0.4
             let matchStart = previousMatchEndIndex
             previousMatchEndIndex = offset
             let range = matchStart ..< previousMatchEndIndex
